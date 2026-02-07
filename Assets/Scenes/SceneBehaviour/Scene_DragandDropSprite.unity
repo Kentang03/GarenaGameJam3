@@ -708,8 +708,8 @@ MonoBehaviour:
   camera2D: {fileID: 2071228045}
   camera3D: {fileID: 0}
   spawnPoints2D:
-  - {fileID: 1030036865}
   - {fileID: 1947907438}
+  - {fileID: 1030036865}
   spawnPoints3D: []
   twoD_Z: 0
   threeD_Y: 0
@@ -949,13 +949,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 691761266}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: -0, z: -0.0042286403, w: 0.99999106}
   m_LocalPosition: {x: 8.6131, y: -1.3343, z: 0}
   m_LocalScale: {x: 35.075233, y: 16.241083, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -0.485}
 --- !u!1 &740598560
 GameObject:
   m_ObjectHideFlags: 0
@@ -1176,7 +1176,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1947907438}
+  - {fileID: 1030036865}
   m_Father: {fileID: 2001183161}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1030036864
@@ -1185,8 +1185,20 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 2065539043}
+    m_TransformParent: {fileID: 930913054}
     m_Modifications:
+    - target: {fileID: 2387865644706105341, guid: c8bd612ae84c40c4998b4a0a3e356e2c, type: 3}
+      propertyPath: sceneName
+      value: Scene_DragandDropClone
+      objectReference: {fileID: 0}
+    - target: {fileID: 2387865644706105341, guid: c8bd612ae84c40c4998b4a0a3e356e2c, type: 3}
+      propertyPath: useSingleScene
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2387865644706105341, guid: c8bd612ae84c40c4998b4a0a3e356e2c, type: 3}
+      propertyPath: targetDimension
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2387865644706105341, guid: c8bd612ae84c40c4998b4a0a3e356e2c, type: 3}
       propertyPath: dimensionManager
       value: 
@@ -2215,7 +2227,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 930913054}
+    m_TransformParent: {fileID: 2065539043}
     m_Modifications:
     - target: {fileID: 2387865644706105341, guid: c8bd612ae84c40c4998b4a0a3e356e2c, type: 3}
       propertyPath: teleportIndex
@@ -2273,7 +2285,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Door_1 (5)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2387865644706105341, guid: c8bd612ae84c40c4998b4a0a3e356e2c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -2358,7 +2371,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1030036865}
+  - {fileID: 1947907438}
   m_Father: {fileID: 2001183161}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2071228043
