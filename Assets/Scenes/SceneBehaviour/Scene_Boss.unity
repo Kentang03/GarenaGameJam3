@@ -1609,6 +1609,10 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: -0.277959
       objectReference: {fileID: 0}
+    - target: {fileID: 2891189211943898843, guid: cf78eb8d93c0f034d9a436f6a577bf52, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7312717860690344543, guid: cf78eb8d93c0f034d9a436f6a577bf52, type: 3}
       propertyPath: m_Name
       value: 2DPlayer
