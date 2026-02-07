@@ -11,6 +11,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/testing.unity
     guid: 6ec22bc71639a2e4893d5f3f67ba3a48
+  - enabled: 1
+    path: Assets/Scenes/SceneBehaviour/Scene_DragandDropSprite.unity
+    guid: 2f8c607101ee5c5459203d9b8ce20ed6
+  - enabled: 1
+    path: Assets/Scenes/SceneBehaviour/Scene_DragandDropClone.unity
+    guid: cf37ce50f0e6fe448b3587a4a53ad016
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
