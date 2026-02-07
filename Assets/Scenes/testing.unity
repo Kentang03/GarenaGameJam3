@@ -333,6 +333,7 @@ MonoBehaviour:
   useSingleScene: 1
   targetDimension: 1
   dimensionManager: {fileID: 474247519}
+  doorDimension: 0
 --- !u!212 &243951138
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -655,6 +656,7 @@ MonoBehaviour:
   useSingleScene: 1
   targetDimension: 0
   dimensionManager: {fileID: 474247519}
+  doorDimension: 1
 --- !u!65 &341312480
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -984,6 +986,7 @@ MonoBehaviour:
   useSingleScene: 1
   targetDimension: 0
   dimensionManager: {fileID: 474247519}
+  doorDimension: 1
 --- !u!65 &574766926
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1771,6 +1774,7 @@ MonoBehaviour:
   useSingleScene: 1
   targetDimension: 1
   dimensionManager: {fileID: 474247519}
+  doorDimension: 0
 --- !u!61 &1184348232
 BoxCollider2D:
   m_ObjectHideFlags: 0

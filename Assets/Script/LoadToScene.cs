@@ -60,6 +60,7 @@ public class LoadToScene : MonoBehaviour
         if (loadOnKey && Input.GetKeyDown(triggerKey) && isTrigger && !isLoading)
         {
             Load();
+            
         }
     }
 
@@ -85,8 +86,9 @@ public class LoadToScene : MonoBehaviour
                 Debug.LogError("LoadToScene: DimensionManager is not assigned for single-scene mode.");
                 return;
             }
-
+            
             dimensionManager.SetMode(targetDimension, teleportIndex);
+
             return;
         }
 
@@ -100,6 +102,7 @@ public class LoadToScene : MonoBehaviour
         isLoading = true;
         teleportDataIndex.currentIndex = teleportIndex;
         var async = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+
         if (async == null)
         {
             Debug.LogError($"LoadToScene: failed to start async load for scene '{sceneName}'.");
