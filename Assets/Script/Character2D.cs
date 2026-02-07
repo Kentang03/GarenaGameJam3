@@ -8,6 +8,15 @@ public class Character2D : MonoBehaviour
     [SerializeField] private float groundCheckRadius = 0.2f;
     [SerializeField] private LayerMask groundLayer;
 
+    [Header("2D Animation")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private string speedParam = "Speed";
+    [SerializeField] private string isGroundedParam = "IsGrounded";
+    [SerializeField] private string isRunningParam = "IsRunning";
+    [SerializeField] private string velYParam = "VelY";
+    [SerializeField] private string jumpTriggerParam = "Jump";
+
     [Header("2D Camera Follow")]
     [SerializeField] private Camera followCamera;
     [SerializeField] private Vector2 cameraOffset = new Vector2(0f, 2f);
@@ -25,21 +34,54 @@ public class Character2D : MonoBehaviour
     private Vector3 camVelocity;
     private float lastX;
     private float lookAheadX;
+    private int hashSpeed, hashIsGrounded, hashVelY, hashJump, hashIsRunning;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         lastX = transform.position.x;
+
+        if (animator == null) TryGetComponent(out animator);
+        if (spriteRenderer == null)
+        {
+            if (!TryGetComponent(out spriteRenderer))
+            {
+                spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            }
+        }
+
+        hashSpeed = Animator.StringToHash(speedParam);
+        hashIsGrounded = Animator.StringToHash(isGroundedParam);
+        hashVelY = Animator.StringToHash(velYParam);
+        hashJump = Animator.StringToHash(jumpTriggerParam);
+        hashIsRunning = Animator.StringToHash(isRunningParam);
     }
 
     void Update()
     {
         inputX = Input.GetAxisRaw("Horizontal");
+        if (spriteRenderer != null && Mathf.Abs(inputX) > 0.001f)
+        {
+            spriteRenderer.flipX = inputX < 0f;
+        }
 
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+
+            if (animator != null)
+            {
+                animator.SetTrigger(hashJump);
+            }
+        }
+
+        if (animator != null)
+        {
+            animator.SetFloat(hashSpeed, Mathf.Abs(rb.linearVelocity.x));
+            animator.SetBool(hashIsGrounded, isGrounded);
+            animator.SetFloat(hashVelY, rb.linearVelocity.y);
+            animator.SetBool(hashIsRunning, Mathf.Abs(inputX) > 0.01f && isGrounded);
         }
     }
 
