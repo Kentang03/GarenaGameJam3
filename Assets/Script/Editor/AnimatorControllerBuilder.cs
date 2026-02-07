@@ -24,6 +24,10 @@ public class CharacterAnimatorBuilderWindow : EditorWindow
     public bool jumpReturnWhenFalling = true; // require VelY <= threshold to return (prevents exiting while going up)
     public float fallingVelYThreshold = 0f; // typically 0: return only when starting to fall
 
+    [Header("Locomotion Options")]
+    public float idleToMoveDuration = 0.1f;
+    public float moveToIdleDuration = 0.1f;
+
     [Header("Parameter Names (match Character2D)")]
     public string speedParam = "Speed";
     public string isRunningParam = "IsRunning";
@@ -74,6 +78,11 @@ public class CharacterAnimatorBuilderWindow : EditorWindow
                 jumpExitTimeNormalized = EditorGUILayout.Slider("Exit Time (0-1)", jumpExitTimeNormalized, 0f, 1f);
             }
         }
+
+        EditorGUILayout.Space();
+        GUILayout.Label("Locomotion Options", EditorStyles.boldLabel);
+        idleToMoveDuration = EditorGUILayout.FloatField("Idle → Locomotion Duration", idleToMoveDuration);
+        moveToIdleDuration = EditorGUILayout.FloatField("Locomotion → Idle Duration", moveToIdleDuration);
 
         EditorGUILayout.Space();
         GUILayout.Label("Parameter Names", EditorStyles.boldLabel);
@@ -148,12 +157,12 @@ public class CharacterAnimatorBuilderWindow : EditorWindow
         // Transitions: Idle <-> Locomotion via IsRunning
         var idleToMove = idleState.AddTransition(moveState);
         idleToMove.hasExitTime = false;
-        idleToMove.duration = 0f;
+        idleToMove.duration = idleToMoveDuration;
         idleToMove.AddCondition(AnimatorConditionMode.If, 0f, isRunningParam);
 
         var moveToIdle = moveState.AddTransition(idleState);
         moveToIdle.hasExitTime = false;
-        moveToIdle.duration = 0f;
+        moveToIdle.duration = moveToIdleDuration;
         moveToIdle.AddCondition(AnimatorConditionMode.IfNot, 0f, isRunningParam);
 
         // Jump transitions
