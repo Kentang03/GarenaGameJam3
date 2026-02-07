@@ -1140,7 +1140,7 @@ MonoBehaviour:
   delayBeforeMove: 0
   oneShot: 1
   customDirection: {x: 51.9, y: 8.43}
-  moveMode: 2
+  moveMode: 1
   moveDistance: 17.9
   moveSpeed: 20
   targetMode: 0
