@@ -26,6 +26,7 @@ public class Character2D : MonoBehaviour
     [SerializeField] private bool loopJumpUntilGrounded = true; // keep playing jump while airborne
 
     [Header("2D Camera Follow")]
+    [SerializeField] private bool cameraFollow;
     [SerializeField] private Camera followCamera;
     [SerializeField] private Vector2 cameraOffset = new Vector2(0f, 2f);
     [SerializeField] private float cameraSmoothTime = 0.15f;
@@ -173,8 +174,10 @@ public class Character2D : MonoBehaviour
 
     void LateUpdate()
     {
+        if (cameraFollow == false) return;
         if (followCamera == null)
         {
+           
             var main = Camera.main;
             if (main != null && main.orthographic)
             {
