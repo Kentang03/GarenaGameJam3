@@ -33,6 +33,12 @@ public class TriggeredPlatformMover2D : MonoBehaviour
     [Tooltip("Movement speed in units per second.")]
     public float moveSpeed = 3f;
 
+    [Header("Affect Other Object")]
+    [Tooltip("If true, when triggered by collision/trigger, also move the colliding object using the same direction/distance/speed.")]
+    public bool moveCollidingObject = false;
+    [Tooltip("Optional: Specific object to move on trigger. If set, this target will be moved; otherwise the colliding object will be moved.")]
+    public Transform otherObjectToMove;
+
     [Header("Trap Behavior")]
     [Tooltip("Make colliders pass-through on trigger so player falls through.")]
     public bool makePassThroughOnTrigger = true;
@@ -76,7 +82,7 @@ public class TriggeredPlatformMover2D : MonoBehaviour
     {
         if (activation == ActivationMode.TriggerEnter2D && other.CompareTag(playerTag))
         {
-            TriggerTrap();
+            TriggerTrap(other.transform);
         }
     }
 
@@ -84,11 +90,11 @@ public class TriggeredPlatformMover2D : MonoBehaviour
     {
         if (activation == ActivationMode.CollisionEnter2D && collision.collider.CompareTag(playerTag))
         {
-            TriggerTrap();
+            TriggerTrap(collision.collider.transform);
         }
     }
 
-    private void TriggerTrap()
+    private void TriggerTrap(Transform otherTarget = null)
     {
         if (triggered && oneShot) return;
         triggered = true;
@@ -103,7 +109,8 @@ public class TriggeredPlatformMover2D : MonoBehaviour
             }
         }
 
-        if (changeBodyToDynamic && rb != null)
+        // If we are only moving the other object, keep this object static (do not change body type)
+        if (changeBodyToDynamic && rb != null && !moveCollidingObject)
         {
             rb.bodyType = RigidbodyType2D.Dynamic;
             rb.gravityScale = dynamicGravityScale;
@@ -116,8 +123,21 @@ public class TriggeredPlatformMover2D : MonoBehaviour
                       : (customDirection.sqrMagnitude > 0f ? customDirection.normalized : Vector2.down);
         targetPos = startPos + (Vector3)(dir * moveDistance);
 
-        if (moveRoutine != null) StopCoroutine(moveRoutine);
-        moveRoutine = StartCoroutine(MoveToTarget());
+        if (!moveCollidingObject)
+        {
+            // Move this trap/platform itself
+            if (moveRoutine != null) StopCoroutine(moveRoutine);
+            moveRoutine = StartCoroutine(MoveToTarget());
+        }
+        else
+        {
+            // Only move another object; this object acts purely as the trigger
+            var target = otherObjectToMove != null ? otherObjectToMove : otherTarget;
+            if (target != null)
+            {
+                StartCoroutine(MoveOtherTarget(target, dir));
+            }
+        }
     }
 
     private IEnumerator MoveToTarget()
@@ -157,5 +177,31 @@ public class TriggeredPlatformMover2D : MonoBehaviour
     {
         var playerGO = GameObject.FindWithTag(playerTag);
         return playerGO != null ? playerGO.transform : null;
+    }
+
+    private IEnumerator MoveOtherTarget(Transform target, Vector2 dir)
+    {
+        float duration = moveDistance / Mathf.Max(0.001f, moveSpeed);
+        float t = 0f;
+        Vector3 from = target.position;
+        Vector3 otherTargetPos = from + (Vector3)(dir * moveDistance);
+
+        var otherRb = target.GetComponent<Rigidbody2D>();
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            float k = Mathf.Clamp01(t / duration);
+            Vector3 next = Vector3.Lerp(from, otherTargetPos, k);
+
+            if (otherRb != null && otherRb.bodyType != RigidbodyType2D.Dynamic)
+            {
+                otherRb.MovePosition(next);
+            }
+            else
+            {
+                target.position = next;
+            }
+            yield return null;
+        }
     }
 }
