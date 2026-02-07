@@ -104,6 +104,50 @@ public class DimensionManager : MonoBehaviour
         OnDimensionChanged?.Invoke(mode);
     }
 
+    // Teleport within the same dimension (no camera/rig toggling)
+    public void Teleport2D(int index)
+    {
+        var clampedIndex = ClampIndex(index, GameDimension.TwoD);
+        teleportDataIndex.currentIndex = clampedIndex;
+        PositionRig(player2D, GetSpawn(spawnPoints2D, clampedIndex), true);
+    }
+
+    public void Teleport3D(int index)
+    {
+        var clampedIndex = ClampIndex(index, GameDimension.ThreeD);
+        teleportDataIndex.currentIndex = clampedIndex;
+        PositionRig(player3D, GetSpawn(spawnPoints3D, clampedIndex), false);
+    }
+
+    public void Teleport2DTo(Transform target)
+    {
+        PositionRig(player2D, target, true);
+    }
+
+    public void Teleport3DTo(Transform target)
+    {
+        PositionRig(player3D, target, false);
+    }
+
+    // Respawn current active dimension using last recorded index
+    public void Respawn()
+    {
+        if (teleportDataIndex == null)
+        {
+            Debug.LogError("DimensionManager: TeleportDataIndex reference is missing.");
+            return;
+        }
+        var idx = teleportDataIndex.currentIndex;
+        if (CurrentDimension == GameDimension.TwoD)
+        {
+            Teleport2D(idx);
+        }
+        else
+        {
+            Teleport3D(idx);
+        }
+    }
+
     private int ClampIndex(int index, GameDimension mode)
     {
         var list = mode == GameDimension.TwoD ? spawnPoints2D : spawnPoints3D;

@@ -88,7 +88,8 @@ public class Character : MonoBehaviour
         {
             rb = gameObject.AddComponent<Rigidbody>();
         }
-        rb.isKinematic = true; // kinematic while in controlled (WASD) mode
+        rb.useGravity = true;   // aktifkan gravitasi fisika
+        rb.isKinematic = false; // biar dipengaruhi fisika
         rb.constraints = RigidbodyConstraints.FreezeRotation; // keep upright until falling
         startRotation = transform.rotation;
         currentTilt = 0f;
@@ -246,10 +247,11 @@ public class Character : MonoBehaviour
                 objectYaw += steer * turnRate * Mathf.Lerp(0.4f, 1f, speedFactor) * Time.deltaTime;
             }
 
-            // Gerak sepanjang forward objek
+            // Gerak sepanjang forward objek (pakai Rigidbody agar konsisten dengan gravitasi)
             if (currentSpeed > 0f)
             {
-                transform.position += transform.forward * currentSpeed * Time.deltaTime;
+                var nextPos = rb.position + transform.forward * currentSpeed * Time.deltaTime;
+                rb.MovePosition(nextPos);
             }
         }
         else
@@ -273,7 +275,8 @@ public class Character : MonoBehaviour
             if (move.sqrMagnitude > 0f)
             {
                 float speed = moveSpeed * (Input.GetKey(KeyCode.LeftShift) ? sprintMultiplier : 1f);
-                transform.position += move.normalized * speed * Time.deltaTime;
+                var nextPos = rb.position + move.normalized * speed * Time.deltaTime;
+                rb.MovePosition(nextPos);
             }
         }
     }

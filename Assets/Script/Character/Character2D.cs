@@ -16,8 +16,17 @@ public class Character2D : MonoBehaviour
     [SerializeField] private string isRunningParam = "IsRunning";
     [SerializeField] private string velYParam = "VelY";
     [SerializeField] private string jumpTriggerParam = "Jump";
+    [SerializeField] private string animSpeedParam = "AnimSpeedMult";
+    [SerializeField] private float walkAnimSpeed = 1f;
+    [SerializeField] private float runAnimSpeed = 1.5f;
+    [SerializeField] private float groundingIgnoreAfterJump = 0.1f; // seconds to ignore ground right after jump
+    [SerializeField] private bool freezeJumpUntilGrounded = true; // hold last jump frame until landing
+    [SerializeField] private string jumpStateName = "Jump"; // must match Animator state name
+    [SerializeField, Range(0.9f, 1f)] private float freezeAtNormalizedTime = 0.98f; // when to freeze near end
+    [SerializeField] private bool loopJumpUntilGrounded = true; // keep playing jump while airborne
 
     [Header("2D Camera Follow")]
+    [SerializeField] private bool cameraFollow;
     [SerializeField] private Camera followCamera;
     [SerializeField] private Vector2 cameraOffset = new Vector2(0f, 2f);
     [SerializeField] private float cameraSmoothTime = 0.15f;
@@ -31,10 +40,11 @@ public class Character2D : MonoBehaviour
     private Rigidbody2D rb;
     private float inputX;
     private bool isGrounded;
+    private float groundingIgnoreTimer;
     private Vector3 camVelocity;
     private float lastX;
     private float lookAheadX;
-    private int hashSpeed, hashIsGrounded, hashVelY, hashJump, hashIsRunning;
+    private int hashSpeed, hashIsGrounded, hashVelY, hashJump, hashIsRunning, hashAnimSpeed;
 
     void Awake()
     {
@@ -49,20 +59,44 @@ public class Character2D : MonoBehaviour
                 spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             }
         }
+        if (spriteRenderer != null)
+        {
+            // Ensure flipX is disabled when using Y rotation flipping
+            spriteRenderer.flipX = false;
+        }
+        if (animator == null)
+        {
+            animator = GetComponentInChildren<Animator>();
+        }
+        if (animator == null)
+        {
+            Debug.LogWarning("Character2D: Animator not found on this GameObject or children.");
+        }
 
         hashSpeed = Animator.StringToHash(speedParam);
         hashIsGrounded = Animator.StringToHash(isGroundedParam);
         hashVelY = Animator.StringToHash(velYParam);
         hashJump = Animator.StringToHash(jumpTriggerParam);
         hashIsRunning = Animator.StringToHash(isRunningParam);
+        hashAnimSpeed = Animator.StringToHash(animSpeedParam);
     }
 
     void Update()
     {
         inputX = Input.GetAxisRaw("Horizontal");
-        if (spriteRenderer != null && Mathf.Abs(inputX) > 0.001f)
+        if (Mathf.Abs(inputX) > 0.001f)
         {
-            spriteRenderer.flipX = inputX < 0f;
+            var euler = transform.localEulerAngles;
+            // Left: 0°, Right: 180°
+            if (inputX > 0f)
+            {
+                euler.y = 0f;
+            }
+            else if (inputX < 0f)
+            {
+                euler.y = 180f;
+            }
+            transform.localEulerAngles = euler;
         }
 
         if (Input.GetButtonDown("Jump") && isGrounded)
@@ -72,16 +106,52 @@ public class Character2D : MonoBehaviour
 
             if (animator != null)
             {
+                if (animator.runtimeAnimatorController == null)
+                {
+                    Debug.LogWarning("Character2D: Animator has no Controller assigned. Jump trigger will have no effect.");
+                }
                 animator.SetTrigger(hashJump);
+                Debug.Log("Jump Triggered");
             }
+
+            groundingIgnoreTimer = groundingIgnoreAfterJump; // temporarily ignore ground so jump state can play
         }
 
         if (animator != null)
         {
-            animator.SetFloat(hashSpeed, Mathf.Abs(rb.linearVelocity.x));
+            var speed01 = Mathf.Clamp01(Mathf.Abs(rb.linearVelocity.x) / moveSpeed);
+            animator.SetFloat(hashSpeed, speed01, 0.1f, Time.deltaTime);
+            var clipSpeed = Mathf.Lerp(walkAnimSpeed, runAnimSpeed, speed01);
+            animator.SetFloat(hashAnimSpeed, clipSpeed, 0.1f, Time.deltaTime);
             animator.SetBool(hashIsGrounded, isGrounded);
             animator.SetFloat(hashVelY, rb.linearVelocity.y);
             animator.SetBool(hashIsRunning, Mathf.Abs(inputX) > 0.01f && isGrounded);
+
+            // Jump playback control while airborne
+            var info = animator.GetCurrentAnimatorStateInfo(0);
+            if (info.IsName(jumpStateName))
+            {
+                if (!isGrounded)
+                {
+                    if (loopJumpUntilGrounded)
+                    {
+                        // keep jump playing; restart when it finishes
+                        if (info.normalizedTime >= 1f)
+                        {
+                            animator.Play(jumpStateName, 0, 0f);
+                        }
+                        if (animator.speed == 0f) animator.speed = 1f;
+                    }
+                    else if (freezeJumpUntilGrounded && info.normalizedTime >= freezeAtNormalizedTime)
+                    {
+                        if (animator.speed != 0f) animator.speed = 0f;
+                    }
+                }
+                else if (animator.speed == 0f)
+                {
+                    animator.speed = 1f;
+                }
+            }
         }
     }
 
@@ -89,13 +159,25 @@ public class Character2D : MonoBehaviour
     {
         rb.linearVelocity = new Vector2(inputX * moveSpeed, rb.linearVelocity.y);
 
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        // Raw ground check
+        var rawGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+
+        // Decrease timer
+        if (groundingIgnoreTimer > 0f)
+        {
+            groundingIgnoreTimer -= Time.fixedDeltaTime;
+        }
+
+        // Apply ignore window: only consider grounded when timer has elapsed
+        isGrounded = rawGrounded && groundingIgnoreTimer <= 0f;
     }
 
     void LateUpdate()
     {
+        if (cameraFollow == false) return;
         if (followCamera == null)
         {
+           
             var main = Camera.main;
             if (main != null && main.orthographic)
             {
