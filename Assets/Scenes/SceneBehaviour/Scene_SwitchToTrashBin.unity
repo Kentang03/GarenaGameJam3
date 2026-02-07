@@ -576,6 +576,12 @@ MonoBehaviour:
   playerTag: Player
   respawnDelay: 0.5
   dimensionManager: {fileID: 474247519}
+  deathParticlePrefab: {fileID: 0}
+  destroyVfxOnRespawn: 1
+  enableCameraShake: 1
+  shakeDuration: 0.35
+  shakeAmplitude: 0.25
+  useUnscaledTime: 0
 --- !u!1 &253075548
 GameObject:
   m_ObjectHideFlags: 0
@@ -2160,7 +2166,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6fccf5c5638d2594a815bb56a48aa6d0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 32506e5988485d0439f5ab8243bbc6d1, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
