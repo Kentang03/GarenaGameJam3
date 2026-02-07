@@ -3049,6 +3049,10 @@ PrefabInstance:
       propertyPath: followCamera
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2202486390330340844, guid: cf78eb8d93c0f034d9a436f6a577bf52, type: 3}
+      propertyPath: invertMovement
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2787142882510891013, guid: cf78eb8d93c0f034d9a436f6a577bf52, type: 3}
       propertyPath: m_Size.x
       value: 0.8059635
