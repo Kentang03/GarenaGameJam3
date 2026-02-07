@@ -32,6 +32,17 @@ public class Character2D : MonoBehaviour
     [Header("Controls")]
     [SerializeField] private bool invertMovement = false; // If true: D=left, A=right
 
+    [Header("SFX Run/Walk")]
+    [SerializeField] private AudioSource sfxSource;
+    [SerializeField] private AudioClip runLoopClip;
+    [SerializeField, Range(0f,1f)] private float sfxVolume = 0.8f;
+    [SerializeField] private float basePitch = 1f;
+    [SerializeField] private float runPitch = 1.2f;
+    [SerializeField, Tooltip("Speed threshold (0..1) above which SFX plays.")]
+    private float playThreshold = 0.1f;
+    [SerializeField, Tooltip("Only play SFX when grounded.")]
+    private bool playOnlyWhenGrounded = true;
+
     [Header("2D Camera Follow")]
     [SerializeField] private bool cameraFollow;
     [SerializeField] private Camera followCamera;
@@ -180,6 +191,49 @@ public class Character2D : MonoBehaviour
                 else if (animator.speed == 0f)
                 {
                     animator.speed = 1f;
+                }
+            }
+        }
+        // Setup SFX source
+        if (sfxSource == null)
+        {
+            TryGetComponent(out sfxSource);
+            if (sfxSource == null)
+            {
+                sfxSource = gameObject.AddComponent<AudioSource>();
+            }
+        }
+        if (sfxSource != null)
+        {
+            sfxSource.loop = true;
+            sfxSource.playOnAwake = false;
+            sfxSource.clip = runLoopClip;
+            sfxSource.volume = sfxVolume;
+            sfxSource.pitch = basePitch;
+        }
+
+        // Run/Walk SFX control
+        if (sfxSource != null && runLoopClip != null)
+        {
+            float speed01Sfx = Mathf.Clamp01(Mathf.Abs(rb.linearVelocity.x) / moveSpeed);
+            bool shouldPlay = speed01Sfx > playThreshold && (!playOnlyWhenGrounded || isGrounded);
+            if (shouldPlay)
+            {
+                if (!sfxSource.isPlaying)
+                {
+                    sfxSource.clip = runLoopClip;
+                    sfxSource.volume = sfxVolume;
+                    sfxSource.loop = true;
+                    sfxSource.Play();
+                }
+                // Sync pitch to movement speed
+                sfxSource.pitch = Mathf.Lerp(basePitch, runPitch, speed01Sfx);
+            }
+            else
+            {
+                if (sfxSource.isPlaying)
+                {
+                    sfxSource.Stop();
                 }
             }
         }
