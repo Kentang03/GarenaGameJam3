@@ -257,6 +257,7 @@ GameObject:
   - component: {fileID: 195090989}
   - component: {fileID: 195090991}
   - component: {fileID: 195090990}
+  - component: {fileID: 195090992}
   m_Layer: 6
   m_Name: Plane (3)
   m_TagString: Untagged
@@ -309,7 +310,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -383,6 +384,40 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &195090992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195090988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9546f180d5c5934e8a0bf5203e36cc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TriggeredPlatformMover2D
+  playerTag: Player
+  activation: 1
+  proximityRange: 2
+  delayBeforeMove: 0
+  oneShot: 1
+  customDirection: {x: 0, y: 0}
+  moveMode: 1
+  moveDistance: 6.38
+  moveSpeed: 14.7
+  targetMode: 0
+  targetTransform: {fileID: 0}
+  targetPosition: {x: 0, y: 0, z: 0}
+  targetPositionIsLocal: 0
+  normalizeCustomDirection: 1
+  constrainHorizontal: 0
+  constrainVertical: 0
+  moveCollidingObject: 0
+  otherObjectToMove: {fileID: 0}
+  makePassThroughOnTrigger: 1
+  disableCollidersOnTrigger: 0
+  changeBodyToDynamic: 0
+  dynamicGravityScale: 1
 --- !u!1 &297947903
 GameObject:
   m_ObjectHideFlags: 0
@@ -417,6 +452,12 @@ MonoBehaviour:
   playerTag: Player
   respawnDelay: 0
   dimensionManager: {fileID: 474247519}
+  deathParticlePrefab: {fileID: 0}
+  destroyVfxOnRespawn: 1
+  enableCameraShake: 1
+  shakeDuration: 0.35
+  shakeAmplitude: 0.25
+  useUnscaledTime: 0
 --- !u!212 &297947905
 SpriteRenderer:
   m_ObjectHideFlags: 0
