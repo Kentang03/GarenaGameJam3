@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b26a25119b115a4bb7fad201062df82, type: 3}
   m_Name: TeleportData2Dto3D
   m_EditorClassIdentifier: Assembly-CSharp::TeleportDataIndex
-  currentIndex: 5
+  currentIndex: 1
