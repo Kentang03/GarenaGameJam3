@@ -29,6 +29,9 @@ public class Character2D : MonoBehaviour
     [SerializeField] private bool applyFrictionlessMaterial = true;
     [SerializeField] private PhysicsMaterial2D frictionlessMaterial; // friction=0, bounciness=0
 
+    [Header("Controls")]
+    [SerializeField] private bool invertMovement = false; // If true: D=left, A=right
+
     [Header("2D Camera Follow")]
     [SerializeField] private bool cameraFollow;
     [SerializeField] private Camera followCamera;
@@ -110,6 +113,7 @@ public class Character2D : MonoBehaviour
     void Update()
     {
         inputX = Input.GetAxisRaw("Horizontal");
+        if (invertMovement) inputX = -inputX;
         if (Mathf.Abs(inputX) > 0.001f)
         {
             var euler = transform.localEulerAngles;
