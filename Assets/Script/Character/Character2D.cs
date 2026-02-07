@@ -45,6 +45,8 @@ public class Character2D : MonoBehaviour
     [Header("SFX Jump")]
     [SerializeField] private AudioClip jumpClip;
     [SerializeField, Range(0f,1f)] private float jumpVolume = 1f;
+    [SerializeField, Tooltip("Optional dedicated AudioSource for one-shot SFX like Jump. If not set, the main SFX source will be used.")]
+    private AudioSource oneShotSource;
 
     [Header("2D Camera Follow")]
     [SerializeField] private bool cameraFollow;
@@ -122,6 +124,30 @@ public class Character2D : MonoBehaviour
                 }
             }
         }
+
+        // Setup SFX sources once
+        if (sfxSource == null)
+        {
+            TryGetComponent(out sfxSource);
+            if (sfxSource == null)
+            {
+                sfxSource = gameObject.AddComponent<AudioSource>();
+            }
+        }
+        sfxSource.loop = true;
+        sfxSource.playOnAwake = false;
+        sfxSource.clip = runLoopClip;
+        sfxSource.volume = sfxVolume;
+        sfxSource.pitch = basePitch;
+
+        if (oneShotSource == null)
+        {
+            oneShotSource = gameObject.AddComponent<AudioSource>();
+        }
+        oneShotSource.loop = false;
+        oneShotSource.playOnAwake = false;
+        oneShotSource.volume = 1f;
+        oneShotSource.pitch = 1f;
     }
 
     void Update()
@@ -149,9 +175,14 @@ public class Character2D : MonoBehaviour
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
 
             // Play jump SFX without interrupting the run loop
-            if (sfxSource != null && jumpClip != null)
+            if (jumpClip != null)
             {
-                sfxSource.PlayOneShot(jumpClip, jumpVolume);
+                var src = oneShotSource != null ? oneShotSource : sfxSource;
+                if (src != null)
+                {
+                    src.PlayOneShot(jumpClip, jumpVolume);
+                    Debug.Log("Jump SFX Played");
+                }
             }
 
             if (animator != null)
@@ -203,24 +234,6 @@ public class Character2D : MonoBehaviour
                 }
             }
         }
-        // Setup SFX source
-        if (sfxSource == null)
-        {
-            TryGetComponent(out sfxSource);
-            if (sfxSource == null)
-            {
-                sfxSource = gameObject.AddComponent<AudioSource>();
-            }
-        }
-        if (sfxSource != null)
-        {
-            sfxSource.loop = true;
-            sfxSource.playOnAwake = false;
-            sfxSource.clip = runLoopClip;
-            sfxSource.volume = sfxVolume;
-            sfxSource.pitch = basePitch;
-        }
-
         // Run/Walk SFX control
         if (sfxSource != null && runLoopClip != null)
         {
