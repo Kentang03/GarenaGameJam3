@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SceneBehaviour/Scene_DragandDropClone.unity
     guid: cf37ce50f0e6fe448b3587a4a53ad016
+  - enabled: 1
+    path: Assets/Scenes/SceneBehaviour/Scene_SwitchToTrashBin.unity
+    guid: 1bd2d4058bd85be4b88be65829d27198
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
