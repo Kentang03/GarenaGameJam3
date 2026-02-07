@@ -82,6 +82,9 @@ public class DeathZone : MonoBehaviour
         {
             StartCameraShake();
         }
+
+        // Reset moved traps/platforms and objects to their initial positions before respawn
+        ResetMovedObjectsGlobal();
         if (respawnDelay > 0f)
         {
             StartCoroutine(RespawnAfterDelay(spawned));
@@ -104,6 +107,16 @@ public class DeathZone : MonoBehaviour
             Destroy(spawned.gameObject);
         }
         dimensionManager.Respawn();
+    }
+
+    private void ResetMovedObjectsGlobal()
+    {
+        var movers = FindObjectsOfType<TriggeredPlatformMover2D>();
+        for (int i = 0; i < movers.Length; i++)
+        {
+            if (movers[i] == null) continue;
+            movers[i].ResetToInitial();
+        }
     }
 
     private void StartCameraShake()
