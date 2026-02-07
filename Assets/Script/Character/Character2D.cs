@@ -42,6 +42,9 @@ public class Character2D : MonoBehaviour
     private float playThreshold = 0.1f;
     [SerializeField, Tooltip("Only play SFX when grounded.")]
     private bool playOnlyWhenGrounded = true;
+    [Header("SFX Jump")]
+    [SerializeField] private AudioClip jumpClip;
+    [SerializeField, Range(0f,1f)] private float jumpVolume = 1f;
 
     [Header("2D Camera Follow")]
     [SerializeField] private bool cameraFollow;
@@ -144,6 +147,12 @@ public class Character2D : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+
+            // Play jump SFX without interrupting the run loop
+            if (sfxSource != null && jumpClip != null)
+            {
+                sfxSource.PlayOneShot(jumpClip, jumpVolume);
+            }
 
             if (animator != null)
             {
