@@ -268,9 +268,21 @@ public class TriggeredPlatformMover2D : MonoBehaviour
     {
         // Draw a line from current position to computed target for easy authoring
         Gizmos.color = Color.cyan;
-        Vector3 from = transform.position;
+        Vector3 platformFrom = transform.position;
         Vector2 _;
-        Vector3 to = ComputeTargetPosition(from, out _);
+        Vector3 platformTo = ComputeTargetPosition(platformFrom, out _);
+
+        // Default gizmo: platform movement from -> to
+        Vector3 from = platformFrom;
+        Vector3 to = platformTo;
+
+        // If moving another object, anchor gizmo from that object's position to its target
+        if (moveCollidingObject && otherObjectToMove != null)
+        {
+            from = otherObjectToMove.position;
+            Vector3 delta = platformTo - platformFrom;
+            to = from + delta;
+        }
         Gizmos.DrawLine(from, to);
         Gizmos.DrawSphere(from, 0.05f);
         Gizmos.DrawSphere(to, 0.05f);
