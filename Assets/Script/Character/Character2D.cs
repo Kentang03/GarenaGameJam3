@@ -25,6 +25,13 @@ public class Character2D : MonoBehaviour
     [SerializeField, Range(0.9f, 1f)] private float freezeAtNormalizedTime = 0.98f; // when to freeze near end
     [SerializeField] private bool loopJumpUntilGrounded = true; // keep playing jump while airborne
 
+    [Header("Wall Stick Prevention")]
+    [SerializeField] private bool applyFrictionlessMaterial = true;
+    [SerializeField] private PhysicsMaterial2D frictionlessMaterial; // friction=0, bounciness=0
+
+    [Header("Controls")]
+    [SerializeField] private bool invertMovement = false; // If true: D=left, A=right
+
     [Header("2D Camera Follow")]
     [SerializeField] private bool cameraFollow;
     [SerializeField] private Camera followCamera;
@@ -79,11 +86,34 @@ public class Character2D : MonoBehaviour
         hashJump = Animator.StringToHash(jumpTriggerParam);
         hashIsRunning = Animator.StringToHash(isRunningParam);
         hashAnimSpeed = Animator.StringToHash(animSpeedParam);
+
+        // Apply frictionless material to all colliders to avoid sticking to side walls while falling
+        if (applyFrictionlessMaterial)
+        {
+            var cols = GetComponentsInChildren<Collider2D>();
+            if (cols != null && cols.Length > 0)
+            {
+                var mat = frictionlessMaterial;
+                if (mat == null)
+                {
+                    mat = new PhysicsMaterial2D("FrictionlessRuntime")
+                    {
+                        friction = 0f,
+                        bounciness = 0f
+                    };
+                }
+                foreach (var c in cols)
+                {
+                    c.sharedMaterial = mat;
+                }
+            }
+        }
     }
 
     void Update()
     {
         inputX = Input.GetAxisRaw("Horizontal");
+        if (invertMovement) inputX = -inputX;
         if (Mathf.Abs(inputX) > 0.001f)
         {
             var euler = transform.localEulerAngles;
