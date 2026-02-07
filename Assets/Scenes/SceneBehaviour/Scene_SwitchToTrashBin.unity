@@ -1070,8 +1070,8 @@ MonoBehaviour:
   playerTag: Player
   respawnDelay: 0.5
   dimensionManager: {fileID: 474247519}
-  deathParticlePrefab: {fileID: 0}
-  destroyVfxOnRespawn: 1
+  deathParticlePrefab: {fileID: 5444962449156002502, guid: 51f6cd0e5f21983438385e4651fe6d74, type: 3}
+  destroyVfxOnRespawn: 0
   enableCameraShake: 1
   shakeDuration: 0.35
   shakeAmplitude: 0.25

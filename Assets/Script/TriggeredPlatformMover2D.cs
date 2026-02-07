@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -73,12 +74,38 @@ public class TriggeredPlatformMover2D : MonoBehaviour
     private Vector3 startPos;
     private Vector3 targetPos;
     private Coroutine moveRoutine;
+    private Vector3 initialPlatformPos;
+    private RigidbodyType2D originalBodyType;
+    private float originalGravityScale;
+    private struct ColliderState { public Collider2D col; public bool enabled; public bool isTrigger; }
+    private List<ColliderState> originalColliderStates = new List<ColliderState>();
+    private Dictionary<Transform, Vector3> movedTargetsOriginalPos = new Dictionary<Transform, Vector3>();
+    private List<Coroutine> otherMoveRoutines = new List<Coroutine>();
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         colliders2D = GetComponentsInChildren<Collider2D>();
         startPos = transform.position;
+        initialPlatformPos = transform.position;
+        if (rb != null)
+        {
+            originalBodyType = rb.bodyType;
+            originalGravityScale = rb.gravityScale;
+        }
+        if (colliders2D != null)
+        {
+            originalColliderStates.Clear();
+            foreach (var c in colliders2D)
+            {
+                originalColliderStates.Add(new ColliderState
+                {
+                    col = c,
+                    enabled = c.enabled,
+                    isTrigger = c.isTrigger
+                });
+            }
+        }
     }
 
     void Update()
@@ -153,7 +180,12 @@ public class TriggeredPlatformMover2D : MonoBehaviour
             {
                 // Move the other object by the same delta the platform will travel
                 var deltaVec = targetPos - startPos;
-                StartCoroutine(MoveOtherTarget(target, deltaVec));
+                if (!movedTargetsOriginalPos.ContainsKey(target))
+                {
+                    movedTargetsOriginalPos[target] = target.position;
+                }
+                var routine = StartCoroutine(MoveOtherTarget(target, deltaVec));
+                otherMoveRoutines.Add(routine);
             }
         }
     }
@@ -224,6 +256,8 @@ public class TriggeredPlatformMover2D : MonoBehaviour
             }
             yield return null;
         }
+        // Remove finished routine reference
+        otherMoveRoutines.RemoveAll(c => c == null);
     }
 
     private Vector3 ComputeTargetPosition(Vector3 from, out Vector2 usedDir)
@@ -286,5 +320,71 @@ public class TriggeredPlatformMover2D : MonoBehaviour
         Gizmos.DrawLine(from, to);
         Gizmos.DrawSphere(from, 0.05f);
         Gizmos.DrawSphere(to, 0.05f);
+    }
+
+    // Reset this platform and any objects it moved back to their original positions
+    public void ResetToInitial()
+    {
+        // Stop ongoing movement coroutines
+        if (moveRoutine != null)
+        {
+            StopCoroutine(moveRoutine);
+            moveRoutine = null;
+        }
+        if (otherMoveRoutines.Count > 0)
+        {
+            foreach (var r in otherMoveRoutines)
+            {
+                if (r != null) StopCoroutine(r);
+            }
+            otherMoveRoutines.Clear();
+        }
+
+        // Restore platform physics state
+        if (rb != null)
+        {
+            rb.bodyType = originalBodyType;
+            rb.gravityScale = originalGravityScale;
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
+
+        // Restore colliders
+        if (originalColliderStates.Count > 0)
+        {
+            foreach (var s in originalColliderStates)
+            {
+                if (s.col == null) continue;
+                s.col.enabled = s.enabled;
+                s.col.isTrigger = s.isTrigger;
+            }
+        }
+
+        // Restore platform position
+        transform.position = initialPlatformPos;
+        startPos = initialPlatformPos;
+        triggered = false;
+
+        // Restore moved targets
+        if (movedTargetsOriginalPos.Count > 0)
+        {
+            foreach (var kv in movedTargetsOriginalPos)
+            {
+                var target = kv.Key;
+                var origPos = kv.Value;
+                if (target == null) continue;
+                var trb = target.GetComponent<Rigidbody2D>();
+                if (trb != null)
+                {
+                    trb.linearVelocity = Vector2.zero;
+                    trb.angularVelocity = 0f;
+                    trb.MovePosition(origPos);
+                }
+                else
+                {
+                    target.position = origPos;
+                }
+            }
+        }
     }
 }
