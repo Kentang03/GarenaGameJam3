@@ -21,6 +21,11 @@ public class Character3D : MonoBehaviour
     [SerializeField] private float pitchMax = 65f;
     [SerializeField] private bool lockCursor = true;
 
+    [Header("Camera Anchor")]
+    [SerializeField] private Transform cameraAnchor;
+    [SerializeField] private Vector3 pivotOffset = Vector3.zero;
+    [SerializeField] private bool parentPivotToAnchor = true;
+
     [Header("Animator")]
     [SerializeField] private Animator animator;
     [SerializeField] private string speedParam = "Speed";
@@ -67,7 +72,14 @@ public class Character3D : MonoBehaviour
 
         var pivotGo = new GameObject("CameraPivot");
         camPivot = pivotGo.transform;
-        camPivot.SetParent(transform, false);
+        if (cameraAnchor != null && parentPivotToAnchor)
+        {
+            camPivot.SetParent(cameraAnchor, false);
+        }
+        else
+        {
+            camPivot.SetParent(transform, false);
+        }
         yaw = transform.eulerAngles.y;
         pitch = 10f;
 
@@ -143,11 +155,21 @@ public class Character3D : MonoBehaviour
         pitch -= Input.GetAxis("Mouse Y") * pitchSensitivity * Time.deltaTime;
         pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
 
-        camPivot.position = transform.position + Vector3.up * camHeight;
+        Vector3 anchorPos = cameraAnchor != null ? cameraAnchor.position : (transform.position + Vector3.up * camHeight);
+        camPivot.position = anchorPos + pivotOffset;
         camPivot.rotation = Quaternion.Euler(pitch, yaw, 0f);
 
         var desiredPos = camPivot.position - camPivot.forward * camDistance;
         followCamera.transform.position = desiredPos;
         followCamera.transform.rotation = Quaternion.LookRotation(camPivot.position - desiredPos, Vector3.up);
+    }
+
+    public void SetCameraAnchor(Transform newAnchor, bool parentPivot = true)
+    {
+        cameraAnchor = newAnchor;
+        if (camPivot != null)
+        {
+            camPivot.SetParent((parentPivot && newAnchor != null) ? newAnchor : transform, false);
+        }
     }
 }

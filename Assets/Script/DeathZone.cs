@@ -21,6 +21,15 @@ public class DeathZone : MonoBehaviour
     [SerializeField] private bool useUnscaledTime = false;
     private Coroutine shakeRoutine;
 
+    [Header("Death SFX")]
+    [SerializeField] private bool enableDeathSfx = true;
+    [SerializeField] private AudioClip deathClip;
+    [SerializeField, Range(0f,1f)] private float deathSfxVolume = 1f;
+    [Tooltip("Play SFX at the player's position (3D) instead of via a local AudioSource.")]
+    [SerializeField] private bool playSfxAtPlayerPosition = true;
+    [Tooltip("Optional AudioSource to play the death SFX if not using PlayClipAtPoint.")]
+    [SerializeField] private AudioSource deathSfxSource;
+
     void Awake()
     {
         if (dimensionManager == null)
@@ -81,6 +90,29 @@ public class DeathZone : MonoBehaviour
         if (enableCameraShake)
         {
             StartCameraShake();
+        }
+
+        // Play death SFX
+        if (enableDeathSfx && deathClip != null)
+        {
+            if (playSfxAtPlayerPosition && player != null)
+            {
+                AudioSource.PlayClipAtPoint(deathClip, player.transform.position, deathSfxVolume);
+            }
+            else
+            {
+                if (deathSfxSource == null)
+                {
+                    deathSfxSource = gameObject.GetComponent<AudioSource>();
+                    if (deathSfxSource == null)
+                    {
+                        deathSfxSource = gameObject.AddComponent<AudioSource>();
+                        deathSfxSource.playOnAwake = false;
+                        deathSfxSource.loop = false;
+                    }
+                }
+                deathSfxSource.PlayOneShot(deathClip, deathSfxVolume);
+            }
         }
 
         // Reset moved traps/platforms and objects to their initial positions before respawn
