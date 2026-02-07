@@ -995,6 +995,7 @@ GameObject:
   - component: {fileID: 208422532}
   - component: {fileID: 208422534}
   - component: {fileID: 208422533}
+  - component: {fileID: 208422535}
   m_Layer: 6
   m_Name: Plane (13)
   m_TagString: Untagged
@@ -1047,11 +1048,11 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.49491352}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -1061,7 +1062,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 1.9898266}
   m_EdgeRadius: 0
 --- !u!212 &208422534
 SpriteRenderer:
@@ -1121,6 +1122,40 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &208422535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 208422531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9546f180d5c5934e8a0bf5203e36cc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TriggeredPlatformMover2D
+  playerTag: Player
+  activation: 1
+  proximityRange: 2
+  delayBeforeMove: 0
+  oneShot: 1
+  customDirection: {x: 51.9, y: 8.43}
+  moveMode: 2
+  moveDistance: 17.9
+  moveSpeed: 20
+  targetMode: 0
+  targetTransform: {fileID: 0}
+  targetPosition: {x: 0, y: 0, z: 0}
+  targetPositionIsLocal: 0
+  normalizeCustomDirection: 1
+  constrainHorizontal: 0
+  constrainVertical: 0
+  moveCollidingObject: 0
+  otherObjectToMove: {fileID: 0}
+  makePassThroughOnTrigger: 1
+  disableCollidersOnTrigger: 0
+  changeBodyToDynamic: 0
+  dynamicGravityScale: 1
 --- !u!1 &221089055
 GameObject:
   m_ObjectHideFlags: 0
@@ -3079,6 +3114,13 @@ MonoBehaviour:
   moveMode: 1
   moveDistance: 20
   moveSpeed: 20
+  targetMode: 0
+  targetTransform: {fileID: 0}
+  targetPosition: {x: 0, y: 0, z: 0}
+  targetPositionIsLocal: 0
+  normalizeCustomDirection: 1
+  constrainHorizontal: 0
+  constrainVertical: 0
   moveCollidingObject: 1
   otherObjectToMove: {fileID: 1288834284}
   makePassThroughOnTrigger: 1
