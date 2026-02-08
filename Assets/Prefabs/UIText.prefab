@@ -66,7 +66,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: e3265ab4bf004d28a9537516768c1c75, type: 3}
     m_FontSize: 105
     m_FontStyle: 0
     m_BestFit: 0
@@ -139,7 +139,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.09433961, g: 0.042541824, b: 0.042541824, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -286,15 +286,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StuckHintPopup
   player: {fileID: 0}
   movementThreshold: 0.2
-  resetOnMovement: 1
+  resetOnMovement: 0
   startActive: 1
   hintSteps:
-  - stuckSeconds: 5
-    message: Coba lompat atau cari jalan lain.
-  - stuckSeconds: 8
+  - stuckSeconds: 10
+    message: Try doing something instead of waiting.
+  - stuckSeconds: 13
     message: 
-  - stuckSeconds: 15
-    message: Butuh bantuan? Lihat petunjuk di sudut layar.
+  - stuckSeconds: 18
+    message: "No, it\u2019s not a bug"
+  - stuckSeconds: 20
+    message: .
+  - stuckSeconds: 28
+    message: This is a tutorial level, by the way
+  - stuckSeconds: 30
+    message: .
+  - stuckSeconds: 38
+    message: Drag it. Please. The big box. That one.
+  - stuckSeconds: 40
+    message: 
+  - stuckSeconds: 45
+    message: This is why we added text.
+  - stuckSeconds: 48
+    message: 
   popupGroup: {fileID: 117624729558106070}
   popupText: {fileID: 7388497172060933809}
   fadeDuration: 0.2
