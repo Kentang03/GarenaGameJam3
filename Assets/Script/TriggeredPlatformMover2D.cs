@@ -34,15 +34,6 @@ public class TriggeredPlatformMover2D : MonoBehaviour
     [Tooltip("Movement speed in units per second.")]
     public float moveSpeed = 3f;
 
-    [Header("SFX Movement")]
-    [Tooltip("Enable/disable playing SFX when movement starts.")]
-    public bool enableMoveSfx = false;
-    [Tooltip("AudioSource to use for movement SFX. If null, one will be added.")]
-    public AudioSource moveSfxSource;
-    [Tooltip("Clip to play exactly when movement begins (after delay).")]
-    public AudioClip moveStartClip;
-    [Range(0f,1f)] public float moveSfxVolume = 1f;
-
     public enum TargetMode { DirectionDistance, TargetTransform, TargetPosition }
     [Header("Targeting")]
     
@@ -113,16 +104,6 @@ public class TriggeredPlatformMover2D : MonoBehaviour
                     enabled = c.enabled,
                     isTrigger = c.isTrigger
                 });
-            }
-        }
-
-        if (enableMoveSfx)
-        {
-            if (moveSfxSource == null)
-            {
-                moveSfxSource = gameObject.AddComponent<AudioSource>();
-                moveSfxSource.playOnAwake = false;
-                moveSfxSource.loop = false;
             }
         }
     }
@@ -213,13 +194,6 @@ public class TriggeredPlatformMover2D : MonoBehaviour
     {
         if (delayBeforeMove > 0f) yield return new WaitForSeconds(delayBeforeMove);
 
-        // Play SFX exactly when motion starts
-        if (enableMoveSfx && moveSfxSource != null && moveStartClip != null)
-        {
-            moveSfxSource.volume = moveSfxVolume;
-            moveSfxSource.PlayOneShot(moveStartClip);
-        }
-
         float duration = moveDistance / Mathf.Max(0.001f, moveSpeed);
         float t = 0f;
         Vector3 from = transform.position;
@@ -259,13 +233,6 @@ public class TriggeredPlatformMover2D : MonoBehaviour
     {
         // Match platform's delay so timing feels identical
         if (delayBeforeMove > 0f) yield return new WaitForSeconds(delayBeforeMove);
-
-        // Play SFX exactly when motion starts (even if platform itself doesn't move)
-        if (enableMoveSfx && moveSfxSource != null && moveStartClip != null)
-        {
-            moveSfxSource.volume = moveSfxVolume;
-            moveSfxSource.PlayOneShot(moveStartClip);
-        }
 
         float duration = moveDistance / Mathf.Max(0.001f, moveSpeed);
         float t = 0f;
