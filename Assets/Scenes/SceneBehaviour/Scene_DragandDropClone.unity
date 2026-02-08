@@ -605,6 +605,11 @@ MonoBehaviour:
   shakeDuration: 0.35
   shakeAmplitude: 0.25
   useUnscaledTime: 0
+  enableDeathSfx: 1
+  deathClip: {fileID: 0}
+  deathSfxVolume: 1
+  playSfxAtPlayerPosition: 1
+  deathSfxSource: {fileID: 0}
 --- !u!4 &58207526
 Transform:
   m_ObjectHideFlags: 0
@@ -1509,6 +1514,10 @@ MonoBehaviour:
   moveMode: 2
   moveDistance: 20
   moveSpeed: 30
+  enableMoveSfx: 0
+  moveSfxSource: {fileID: 0}
+  moveStartClip: {fileID: 0}
+  moveSfxVolume: 1
   targetMode: 0
   targetTransform: {fileID: 0}
   targetPosition: {x: 0, y: 0, z: 0}
@@ -1781,6 +1790,11 @@ MonoBehaviour:
   shakeDuration: 0.35
   shakeAmplitude: 0.25
   useUnscaledTime: 0
+  enableDeathSfx: 1
+  deathClip: {fileID: 0}
+  deathSfxVolume: 1
+  playSfxAtPlayerPosition: 1
+  deathSfxSource: {fileID: 0}
 --- !u!1001 &770498994
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2550,6 +2564,10 @@ MonoBehaviour:
   moveMode: 2
   moveDistance: 20
   moveSpeed: 30
+  enableMoveSfx: 0
+  moveSfxSource: {fileID: 0}
+  moveStartClip: {fileID: 0}
+  moveSfxVolume: 1
   targetMode: 0
   targetTransform: {fileID: 0}
   targetPosition: {x: 0, y: 0, z: 0}
@@ -2983,6 +3001,10 @@ MonoBehaviour:
   moveMode: 1
   moveDistance: 20
   moveSpeed: 30
+  enableMoveSfx: 0
+  moveSfxSource: {fileID: 0}
+  moveStartClip: {fileID: 0}
+  moveSfxVolume: 1
   targetMode: 0
   targetTransform: {fileID: 0}
   targetPosition: {x: 0, y: 0, z: 0}
@@ -3155,6 +3177,11 @@ MonoBehaviour:
   shakeDuration: 0.35
   shakeAmplitude: 0.25
   useUnscaledTime: 0
+  enableDeathSfx: 1
+  deathClip: {fileID: 0}
+  deathSfxVolume: 1
+  playSfxAtPlayerPosition: 1
+  deathSfxSource: {fileID: 0}
 --- !u!1 &1698253369 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7312717860690344543, guid: cf78eb8d93c0f034d9a436f6a577bf52, type: 3}
@@ -3603,6 +3630,10 @@ MonoBehaviour:
   moveMode: 2
   moveDistance: 17.2
   moveSpeed: 80
+  enableMoveSfx: 0
+  moveSfxSource: {fileID: 0}
+  moveStartClip: {fileID: 0}
+  moveSfxVolume: 1
   targetMode: 0
   targetTransform: {fileID: 0}
   targetPosition: {x: 0, y: 0, z: 0}
@@ -3637,6 +3668,10 @@ MonoBehaviour:
   moveMode: 2
   moveDistance: 28.26
   moveSpeed: 80
+  enableMoveSfx: 0
+  moveSfxSource: {fileID: 0}
+  moveStartClip: {fileID: 0}
+  moveSfxVolume: 1
   targetMode: 0
   targetTransform: {fileID: 0}
   targetPosition: {x: 0, y: 0, z: 0}
@@ -3932,6 +3967,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2202486390330340844, guid: cf78eb8d93c0f034d9a436f6a577bf52, type: 3}
+      propertyPath: runPitch
+      value: 0.4
+      objectReference: {fileID: 0}
     - target: {fileID: 2202486390330340844, guid: cf78eb8d93c0f034d9a436f6a577bf52, type: 3}
       propertyPath: cameraFollow
       value: 0
